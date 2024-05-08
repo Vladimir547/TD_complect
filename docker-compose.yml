@@ -1,0 +1,33 @@
+version: '3'
+services:
+  nginx:
+    image: nginx:latest
+    container_name: nginx-td-coplect
+    ports:
+      - 80:80
+    volumes:
+      - './:/var/www/html'
+      - './docker/nginx/conf.d:/etc/nginx/conf.d'
+  php:
+    build: './docker/php/'
+    expose:
+      - 9000
+    volumes:
+      - ./:/var/www/html/
+  mysql:
+    image: mysql:8
+    environment:
+      - MYSQL_DATABASE=td_complect
+      - MYSQL_ROOT_PASSWORD=root
+    restart: always
+    ports:
+      - "3306:3306"
+  phpmyadmin:
+    depends_on:
+      - mysql
+    image: phpmyadmin/phpmyadmin
+    environment:
+      - PMA_HOST=mysql
+      - PMA_PORT=3306
+    ports:
+      - 8001:80
