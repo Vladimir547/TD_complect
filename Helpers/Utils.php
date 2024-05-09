@@ -105,9 +105,20 @@ class Utils
 
     public static function checkAuth (): bool
     {
-
         if(!empty($_SESSION['user'])) {
-            return true;
+            $sql = 'select * from user where id=:id or token=:token';
+            $user = Db::conn()->prepare($sql);
+            $user->execute([
+                'id' => $_SESSION['user']['id'],
+                'token' => $_SESSION['user']['token'],
+            ]);
+            $user = $user->fetch(PDO::FETCH_ASSOC);
+            if ($user) {
+                return true;
+            } else {
+                return false;
+            }
+
         } else {
             return false;
         }

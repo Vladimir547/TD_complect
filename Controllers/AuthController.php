@@ -9,7 +9,7 @@ use PDO;
 
 class AuthController
 {
-    public function register($name, $email, $password, ) {
+    public function register($name, $email, $password, $confirm_password) {
         $login = Utils::sanitize($name);
         $email = Utils::sanitize($email);
         $password = Utils::sanitize($password);
