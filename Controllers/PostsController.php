@@ -23,6 +23,16 @@ class PostsController
         return $posts;
     }
 
+    public function getAll()
+    {
+
+        $sql = 'SELECT  p.id, p.name, p.description, p.date, p.status, u.login as author, p.user_id FROM posts as p left join user as u on p.user_id=u.id';
+        $stmt = Db::conn()->prepare($sql);
+        $stmt->execute();
+        $posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $posts;
+    }
+
     public function store(string $name, string $description)
     {
         $name = Utils::sanitize($name);
@@ -51,27 +61,33 @@ class PostsController
         }
     }
 
-    public function edit(string $id,string $name,string $description)
+    public function edit(string $id,string $name,string $description, string|null $status)
     {
         $id = Utils::sanitize($id);
         $name = Utils::sanitize($name);
         $description = Utils::sanitize($description);
+        $status = $status ? Utils::sanitize($status) : $status;
+        $additionalSet = '';
+        $arrExecute = [
+            'id' => $id,
+            'name' => $name,
+            'description' => $description,
+        ];
         $data = ['status' => 'success'];
+        if($status) {
+            $additionalSet = ', status= :status';
+            $arrExecute['status'] = $status;
+        }
         if (strlen($name) < 1 && strlen($description) < 1) {
             Utils::setFlash('post_edit_error', 'Описание и название не должно быть пустым!');
             $data['status'] = 'error';
 
             echo json_encode($data);
         } else {
-
-            $sql = 'UPDATE posts SET name = :name, description = :description  WHERE id = :id';
+            $sql = "UPDATE posts SET name = :name, description = :description $additionalSet WHERE id = :id";
             $stmt = Db::conn()->prepare($sql);
 
-            $stmt->execute([
-                'id' => $id,
-                'name' => $name,
-                'description' => $description,
-            ]);
+            $stmt->execute($arrExecute);
 
             Utils::setFlash('post_edit_success', 'Запись обновленна!');
             echo json_encode($data);

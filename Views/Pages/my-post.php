@@ -17,7 +17,6 @@ include_once('./Views/Partials/header.php');
         echo Utils::displayFlash('post_success', 'success');
 
         ?>
-        <for
     </div>
     <div class="group mt-5">
         <a href='/my' type="button" class="btn btn-primary">Все</a>

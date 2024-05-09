@@ -19,10 +19,26 @@ session_start();
 $router = new Router();
 
 
+
+
 $router->addRoute('GET', '/', function () {
     $posts = new PostsController();
     $posts = $posts->show();
     include_once("./Views/Pages/main.php");
+});
+$router->addRoute('GET', '/admin', function () {
+    if(!Utils::checkAuth()) {
+        Utils::setFlash('main_error', 'Нет прав');
+        header('Location: /');
+    } elseif (Utils::checkAuth() && !Utils::isAdmin()) {
+        Utils::setFlash('main_error', 'Нет прав');
+        header('Location: /');
+    } else {
+        $posts = new PostsController();
+        $posts = $posts->getAll();
+        include_once("./Views/Pages/admin.php");
+
+    }
 });
 $router->addRoute('GET', '/my', function () {
     $posts = new PostsController();
@@ -104,28 +120,29 @@ $router->addRoute('POST', '/post/create', function () {
 $router->addRoute('GET', '/post/delete/:id', function ($id) {
     $post = new PostsController();
     $post = $post->getOne((int)$id);
-
+    $rights = Utils::checkRights($post);
     if (!Utils::checkAuth()) {
         Utils::setFlash('login_error', 'Нужна аторизация!');
         Utils::redirect('login');
+        exit;
     }
-    if ($post && !Utils::checkRights($post)) {
+    if ($post && !$rights) {
         Utils::setFlash('post_error', 'Нет прав!');
 
     }
     if(!$post) {
         Utils::setFlash('post_error', 'Нет такого поста!');
     }
-    if($post && Utils::checkRights($post)) {
+    if($post && $rights) {
         $post = new PostsController();
         $post = $post->delete($id);
         Utils::setFlash('post_success', 'Удалено!');
     }
-
-    if(!empty($_SERVER['HTTP_REFERER']) && !Utils::checkRights($post)) {
+    if(!empty($_SERVER['HTTP_REFERER']) && $rights) {
         header('Location: ' . $_SERVER['HTTP_REFERER']);
-
+        exit;
     } else {
+        Utils::setFlash('main_error', 'Нет прав!');
         header('Location: /');
     }
 });
@@ -144,6 +161,7 @@ $router->addRoute('GET', '/post/edit/:blogID', function ($blogID) {
 $router->addRoute('POST', '/post/edit/', function () {
     $post = new PostsController();
     $post = $post->getOne((int)$_POST['id']);
+    $status = !empty($_POST['status']) ?  $_POST['status'] : null;
     $rights = null;
     if (!Utils::checkAuth()) {
         echo json_encode(['status' => 'error', 'message' => 'Авторизуйтесь']);
@@ -154,7 +172,7 @@ $router->addRoute('POST', '/post/edit/', function () {
         echo json_encode(['status' => 'error', 'message' => 'Такого поста нет!']);
     }else {
         $post = new PostsController();
-        $post = $post->edit($_POST['id'], $_POST['name'], $_POST['description']);
+        $post = $post->edit($_POST['id'], $_POST['name'], $_POST['description'], $status);
     }
 });
 

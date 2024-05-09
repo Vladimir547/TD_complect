@@ -30,26 +30,47 @@ include_once($_SERVER['DOCUMENT_ROOT'] . '/Views/Partials/header.php');
                         // отображение ошибок
                         echo Utils::displayFlash('post_edit_error', 'danger');
                         echo Utils::displayFlash('post_edit_success', 'success');
-                        if(!empty($post)) {
-                        ?>
-                        <form action="/post/edit" method="POST" id="posts">
-                            <input type="hidden" name="id" id="id" class="form-control" value="<?=$post['id']?>" required>
+                        if (!empty($post)) {
+                            ?>
+                            <form action="/post/edit" method="POST" id="posts">
+                                <input type="hidden" name="id" id="id" class="form-control" value="<?= $post['id'] ?>"
+                                       required>
 
-                            <div class="mb-3">
-                                <label for="name" class="form-label">Название</label>
-                                <input type="text" name="name" id="name" class="form-control" value="<?=$post['name']?>" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="description" class="form-label">Описание</label>
-                                <textarea type="text" name="description" id="description" class="form-control" required><?=$post['description']?></textarea>
-                            </div>
-                            <div class="mb-3 d-grid">
-                                <input type="submit" value="Добавить" class="btn btn-primary">
-                            </div>
-                        </form>
-                        <?php
+                                <div class="mb-3">
+                                    <label for="name" class="form-label">Название</label>
+                                    <input type="text" name="name" id="name" class="form-control"
+                                           value="<?= $post['name'] ?>" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="description" class="form-label">Описание</label>
+                                    <textarea type="text" name="description" id="description" class="form-control"
+                                              required><?= $post['description'] ?></textarea>
+                                </div>
+                                <?php
+                                if (Utils::isAdmin()) {
+                                    ?>
+                                    <div class="mb-3">
+                                        <select class="form-select" name="status" aria-label="Default select example">
+
+                                            <?php
+                                            foreach (\Enums\StatusEnum::cases() as $status) {
+                                                ?>
+                                                <option value="<?=$status->value?>" <?=$status->value == $post['status'] ? 'selected' : '' ?>><?=$status->value?></option>
+                                                <?php
+                                            }
+                                            ?>
+                                        </select>
+                                    </div>
+                                    <?php
+                                }
+                                ?>
+                                <div class="mb-3 d-grid">
+                                    <input type="submit" value="Добавить" class="btn btn-primary">
+                                </div>
+                            </form>
+                            <?php
                         } else {
-                             echo '<h5>Нет такого поста</h5>';
+                            echo '<h5>Нет такого поста</h5>';
                         }
                         ?>
                     </div>
