@@ -5,6 +5,7 @@ namespace Controllers;
 use Db\Db;
 use Helpers\Utils;
 use PDO;
+use Enums\RoleEnum;
 
 
 class AuthController
@@ -43,7 +44,7 @@ class AuthController
                     'login' => $name,
                     'email' => $email,
                     'password' => $hashed_password,
-                    'role' => 'user',
+                    'role' => RoleEnum::USER->value,
                 ]);
                 Utils::setFlash('register_success', 'Ты зарегестрирован, можешь логинится!');
                 echo json_encode($data);
@@ -77,12 +78,10 @@ class AuthController
                 echo json_encode($data);
             } else {
                 Utils::setFlash('login_error', 'Пароли не совподают!');
-//                var_dump(1);
                 $data['status'] = 'error';
                 echo json_encode($data);
             }
         } else {
-//            var_dump(2);
             Utils::setFlash('login_error', 'Такого пользователся нет!');
             $data['status'] = 'error';
             echo json_encode($data);

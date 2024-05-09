@@ -4,6 +4,7 @@ namespace Helpers;
 
 use Db\Db;
 use PDO;
+use Enums\RoleEnum;
 
 
 class Utils
@@ -122,5 +123,44 @@ class Utils
         } else {
             return false;
         }
+    }
+    public static function checkRights ($post): bool
+    {
+        if(!empty($_SESSION['user'])) {
+            $sql = 'select * from user where id=:id or token=:token';
+            $user = Db::conn()->prepare($sql);
+            $user->execute([
+                'id' => $_SESSION['user']['id'],
+                'token' => $_SESSION['user']['token'],
+            ]);
+            $user = $user->fetch(PDO::FETCH_ASSOC);
+            if ($user['id'] === $post['user_id']) {
+                return true;
+            } elseif($user['role'] === RoleEnum::ADMIN->value) {
+                return true;
+            } else {
+                return false;
+            }
+
+        } else {
+            return false;
+        }
+        return false;
+    }
+    public static function isAdmin (): bool
+    {
+        $sql = 'select * from user where id=:id or token=:token';
+        $user = Db::conn()->prepare($sql);
+        $user->execute([
+            'id' => $_SESSION['user']['id'],
+            'token' => $_SESSION['user']['token'],
+        ]);
+        $user = $user->fetch(PDO::FETCH_ASSOC);
+        if($user['role'] === RoleEnum::ADMIN->value) {
+            return true;
+        } else {
+            return false;
+        }
+
     }
 }

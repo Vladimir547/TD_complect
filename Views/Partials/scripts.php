@@ -1,4 +1,4 @@
-<script src="./js/bootstrap.js"></script>
+<script src="/js/bootstrap.js"></script>
 <script>
     document.querySelectorAll('.dropdown-toggle').forEach(item => {
         item.addEventListener('click', event => {

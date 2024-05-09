@@ -25,8 +25,14 @@ use Helpers\Utils;
                                     <?=$_SESSION['user']['login']?>
                             </a>
                             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                <a class="dropdown-item" href="/admin">Админка</a>
-                                <a class="dropdown-item" href="/my-posts">Мои посты</a>
+                                <?php
+                                    if(Utils::isAdmin()) {
+                                        ?>
+                                            <a class="dropdown-item" href="/admin">Админка</a>
+                                        <?php
+                                    }
+                                ?>
+                                <a class="dropdown-item" href="/my">Мои посты</a>
                                 <a class="dropdown-item" href="/logout">Выйти</a>
                             </div>
                         </li>
