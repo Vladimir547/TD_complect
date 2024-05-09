@@ -87,26 +87,21 @@ class Utils
 
     public static function validPassword(string $password): string|bool
     {
-
-
         if (strlen($password) < 8) {
             $passwordErr = "Пароль должен содержать больше 8 символов";
-        }
-        elseif(!preg_match("#[0-9]+#",$password)) {
-        $passwordErr = "Пароль должен содержать минимум 1 цифру!";
-        }
-        elseif(!preg_match("#[A-ZА-Я]+#",$password)) {
-        $passwordErr = "Пароль должен содержать минимум 1 заглавную букву!";
-        }
-        elseif(!preg_match("#[a-zа-я]+#",$password)) {
-        $passwordErr = "Пароль должен содержать минимум 1 не заглавную букву!";
+        } elseif (!preg_match("#[0-9]+#", $password)) {
+            $passwordErr = "Пароль должен содержать минимум 1 цифру!";
+        } elseif (!preg_match("#[A-ZА-Я]+#", $password)) {
+            $passwordErr = "Пароль должен содержать минимум 1 заглавную букву!";
+        } elseif (!preg_match("#[a-zа-я]+#", $password)) {
+            $passwordErr = "Пароль должен содержать минимум 1 не заглавную букву!";
         }
         return !empty($passwordErr) ? $passwordErr : true;
     }
 
-    public static function checkAuth (): bool
+    public static function checkAuth(): bool
     {
-        if(!empty($_SESSION['user'])) {
+        if (!empty($_SESSION['user'])) {
             $sql = 'select * from user where id=:id or token=:token';
             $user = Db::conn()->prepare($sql);
             $user->execute([
@@ -124,9 +119,10 @@ class Utils
             return false;
         }
     }
-    public static function checkRights ($post): bool
+
+    public static function checkRights($post): bool
     {
-        if(!empty($_SESSION['user'])) {
+        if (!empty($_SESSION['user'])) {
             $sql = 'select * from user where id=:id or token=:token';
             $user = Db::conn()->prepare($sql);
             $user->execute([
@@ -136,7 +132,7 @@ class Utils
             $user = $user->fetch(PDO::FETCH_ASSOC);
             if ($user['id'] === $post['user_id']) {
                 return true;
-            } elseif($user['role'] === RoleEnum::ADMIN->value) {
+            } elseif ($user['role'] === RoleEnum::ADMIN->value) {
                 return true;
             } else {
                 return false;
@@ -147,7 +143,8 @@ class Utils
         }
         return false;
     }
-    public static function isAdmin (): bool
+
+    public static function isAdmin(): bool
     {
         $sql = 'select * from user where id=:id or token=:token';
         $user = Db::conn()->prepare($sql);
@@ -156,7 +153,7 @@ class Utils
             'token' => $_SESSION['user']['token'],
         ]);
         $user = $user->fetch(PDO::FETCH_ASSOC);
-        if($user['role'] === RoleEnum::ADMIN->value) {
+        if ($user['role'] === RoleEnum::ADMIN->value) {
             return true;
         } else {
             return false;

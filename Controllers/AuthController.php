@@ -10,12 +10,13 @@ use Enums\RoleEnum;
 
 class AuthController
 {
-    public function register($name, $email, $password, $confirm_password) {
+    public function register($name, $email, $password, $confirm_password)
+    {
         $login = Utils::sanitize($name);
         $email = Utils::sanitize($email);
         $password = Utils::sanitize($password);
         $confirm_password = Utils::sanitize($confirm_password);
-        $data = ['status'=> 'success'];
+        $data = ['status' => 'success'];
         $validate = Utils::validPassword($_POST['password']);
         if ($validate != 1) {
             Utils::setFlash('register_error', $validate);
@@ -29,7 +30,7 @@ class AuthController
             $data['status'] = 'error';
             echo json_encode($data);
         } else {
-            $userExist = Utils::existUser($login ,$email);
+            $userExist = Utils::existUser($login, $email);
             $auth = new AuthController();
 
             if ($userExist) {
@@ -52,11 +53,12 @@ class AuthController
         }
     }
 
-    public function login($login, $password) {
+    public function login($login, $password)
+    {
 
         $login = Utils::sanitize($login);
         $password = Utils::sanitize($password);
-        $data = ['status'=> 'success'];
+        $data = ['status' => 'success'];
         $sql = 'SELECT * FROM user WHERE login = :login';
         $stmt = Db::conn()->prepare($sql);
         $stmt->execute(['login' => $login]);

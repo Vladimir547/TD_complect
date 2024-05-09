@@ -23,28 +23,35 @@ include_once($_SERVER['DOCUMENT_ROOT'] . '/Views/Partials/header.php');
             <div class="col-md-12">
                 <div class="card shadow">
                     <div class="card-header">
-                        <h1 class="fw-bold text-secondary">Добавить пост</h1>
+                        <h1 class="fw-bold text-secondary">Редоктировать пост</h1>
                     </div>
                     <div class="card-body p-5">
                         <?php
                         // отображение ошибок
-                        echo Utils::displayFlash('post_error', 'danger');
-                        echo Utils::displayFlash('post_success', 'success');
-
+                        echo Utils::displayFlash('post_edit_error', 'danger');
+                        echo Utils::displayFlash('post_edit_success', 'success');
+                        if(!empty($post)) {
                         ?>
-                        <form action="/post/create" method="POST" id="posts">
+                        <form action="/post/edit" method="POST" id="posts">
+                            <input type="hidden" name="id" id="id" class="form-control" value="<?=$post['id']?>" required>
+
                             <div class="mb-3">
                                 <label for="name" class="form-label">Название</label>
-                                <input type="text" name="name" id="name" class="form-control" required>
+                                <input type="text" name="name" id="name" class="form-control" value="<?=$post['name']?>" required>
                             </div>
                             <div class="mb-3">
                                 <label for="description" class="form-label">Описание</label>
-                                <textarea type="text" name="description" id="description" class="form-control" required></textarea>
+                                <textarea type="text" name="description" id="description" class="form-control" required><?=$post['description']?></textarea>
                             </div>
                             <div class="mb-3 d-grid">
                                 <input type="submit" value="Добавить" class="btn btn-primary">
                             </div>
                         </form>
+                        <?php
+                        } else {
+                             echo '<h5>Нет такого поста</h5>';
+                        }
+                        ?>
                     </div>
                 </div>
             </div>
@@ -61,7 +68,7 @@ include_once($_SERVER['DOCUMENT_ROOT'] . '/Views/Partials/scripts.php');
         document.querySelector('#posts').addEventListener('submit', async (e) => {
             e.preventDefault();
             let formData = new FormData(document.querySelector('#posts'))
-            let response = await fetch("/post/create",
+            let response = await fetch("/post/edit/",
                 {
                     method: 'POST',
                     body: formData,

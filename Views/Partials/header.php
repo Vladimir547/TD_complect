@@ -32,6 +32,7 @@ use Helpers\Utils;
                                         <?php
                                     }
                                 ?>
+                                <a class="dropdown-item" href="/post/create">Добавить пост</a>
                                 <a class="dropdown-item" href="/my">Мои посты</a>
                                 <a class="dropdown-item" href="/logout">Выйти</a>
                             </div>

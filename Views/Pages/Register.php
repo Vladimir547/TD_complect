@@ -7,7 +7,7 @@ include_once('./Views/Partials/head.php');
 ?>
 <body>
 <?php
-    include_once('./Views/Partials/header.php');
+include_once('./Views/Partials/header.php');
 ?>
 <div class="container">
     <div class="row justify-content-center align-items-center min-vh-100">
@@ -37,7 +37,8 @@ include_once('./Views/Partials/head.php');
                         </div>
                         <div class="mb-3">
                             <label for="confirm_password" class="form-label">Подтверждение пароля</label>
-                            <input type="password" name="confirm_password" id="confirm_password" class="form-control" required>
+                            <input type="password" name="confirm_password" id="confirm_password" class="form-control"
+                                   required>
                         </div>
                         <div class="mb-3 d-grid">
                             <input type="submit" value="Регистрация" class="btn btn-primary">
@@ -55,15 +56,15 @@ include_once('./Views/Partials/head.php');
             document.querySelector('#register').addEventListener('submit', async (e) => {
                 e.preventDefault();
                 let formData = new FormData(document.querySelector('#register'))
-                let response  = await fetch("/register",
+                let response = await fetch("/register",
                     {
                         method: 'POST',
                         body: formData,
                     })
                 let answer = await response.json();
-                if(answer.status === 'error') {
+                if (answer.status === 'error') {
                     window.location.reload();
-                } else  {
+                } else {
                     window.location.href = '/login';
                 }
             })

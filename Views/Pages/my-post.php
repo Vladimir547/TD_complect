@@ -10,7 +10,15 @@ include_once('./Views/Partials/head.php');
 include_once('./Views/Partials/header.php');
 ?>
 <div class="container">
+    <div class="group">
+        <?php
+        // отображение ошибок
+        echo Utils::displayFlash('post_error', 'danger');
+        echo Utils::displayFlash('post_success', 'success');
 
+        ?>
+        <for
+    </div>
     <div class="group mt-5">
         <a href='/my' type="button" class="btn btn-primary">Все</a>
         <a href='/my/published' type="button" class="btn btn-primary">Опубликованые</a>
@@ -35,6 +43,8 @@ include_once('./Views/Partials/header.php');
                         <small><?= $post['status'] ?></small>
                     </div>
                     <a href='/blogs/<?= $post['id'] ?>' type="button" class="btn btn-info">Подробнее</a>
+                    <a href='/post/edit/<?= $post['id'] ?>' type="button" class="btn btn-secondary">Редактировать</a>
+                    <a href='/post/delete/<?= $post['id'] ?>' type="button" class="btn btn-danger">Удалить</a>
                 </li>
 
                 <?php

@@ -18,10 +18,10 @@ include_once($_SERVER['DOCUMENT_ROOT'] . '/Views/Partials/header.php');
             ?><h1> Нет доступа!</h1><?php
         } else {
             ?>
-            <h1 class="h2"><?=$post['name']?></h1>
-            <p><?=$post['description']?></p>
-            <p> Дата: <span class="text-info"><?=$post['date']?></span></p>
-            <p> Автор: <span class="text-secondary"><?=$post['author']?></span></p>
+            <h1 class="h2"><?= $post['name'] ?></h1>
+            <p><?= $post['description'] ?></p>
+            <p> Дата: <span class="text-info"><?= $post['date'] ?></span></p>
+            <p> Автор: <span class="text-secondary"><?= $post['author'] ?></span></p>
             <p>Thanks! <span class="text-danger">♥</span></p>
             <?php
         }
