@@ -47,6 +47,9 @@ include_once('./Views/Partials/head.php');
             </div>
         </div>
     </div>
+    <?php
+    include_once('./Views/Partials/scripts.php');
+    ?>
     <script>
         document.addEventListener("DOMContentLoaded", (event) => {
             document.querySelector('#register').addEventListener('submit', async (e) => {
@@ -59,9 +62,9 @@ include_once('./Views/Partials/head.php');
                     })
                 let answer = await response.json();
                 if(answer.status === 'error') {
-                    location.reload();
+                    window.location.reload();
                 } else  {
-                    location.href = '/login';
+                    window.location.href = '/login';
                 }
             })
         });

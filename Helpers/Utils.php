@@ -20,7 +20,7 @@ class Utils
     public static function redirect(string $page): void
     {
         $home_url = $_SERVER['HTTP_HOST'];
-        header('location: ' . $home_url . '/' . $page);
+        header('location: /' . $page);
     }
 
     // метод для установки сообщения
@@ -101,5 +101,15 @@ class Utils
         $passwordErr = "Пароль должен содержать минимум 1 не заглавную букву!";
         }
         return !empty($passwordErr) ? $passwordErr : true;
+    }
+
+    public static function checkAuth (): bool
+    {
+
+        if(!empty($_SESSION['user'])) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }

@@ -11,30 +11,48 @@ use Controllers\AuthController;
 
 session_start();
 $router = new Router();
-//$users = Db::conn()->prepare('select * from user where login=:login or email=:email');
-//$users->execute([
-//    'login' => '123',
-//    'email' => '123@123',
-//]);
-//$row = $users->fetchAll(PDO::FETCH_ASSOC);
+
 
 $router->addRoute('GET', '/', function () {
-    echo "Main!";
-
+    include_once("./Views/Pages/main.php");
 });
 $router->addRoute('GET', '/login', function () {
+    if(Utils::checkAuth()) {
+        header('Location: /');
+    }
     include_once("./Views/Pages/Login.php");
 });
+$router->addRoute('POST', '/login', function () {
+    if(Utils::checkAuth()) {
+        echo json_encode(['status'=> 'error', 'message'=>'вы уже авторизованы']);
+    } else {
+        $auth = new AuthController();
+        $auth->login($_POST['login'], $_POST['password']);
+    }
+});
 $router->addRoute('GET', '/logout', function () {
-    echo "Logout!";
+    if(Utils::checkAuth()) {
+        unset($_SESSION['user']);
+        Utils::redirect('login');
+    } else {
+        Utils::setFlash('login_error', 'Вы не были зарегистрированы!');
+        Utils::redirect('login');
+    }
 });
 $router->addRoute('GET', '/register', function () {
+    if(Utils::checkAuth()) {
+        header('Location: /');
+    }
     include_once("./Views/Pages/Register.php");
 });
 $router->addRoute('POST', '/register', function () {
 //    $auth->register(1,1,1);
+    if(Utils::checkAuth()) {
+        echo json_encode(['status'=> 'error', 'message'=>'вы уже авторизованы']);
+    } else {
         $auth = new AuthController();
-        $auth->register($_POST['login'], $_POST['email'], $_POST['password']);
+        $auth->register($_POST['login'], $_POST['email'], $_POST['password'], $_POST['confirm_password']);
+    }
 });
 $router->addRoute('GET', '/blogs/:blogID', function ($blogID) {
     echo "My route is working with blogID => $blogID !";
