@@ -10,6 +10,13 @@ use Enums\RoleEnum;
 
 class AuthController
 {
+    /**
+     * регистрация
+     *
+     * @params $name, $email, $password, $confirm_password
+     *
+     *  @return void
+     */
     public function register($name, $email, $password, $confirm_password)
     {
         $login = Utils::sanitize($name);
@@ -18,13 +25,14 @@ class AuthController
         $confirm_password = Utils::sanitize($confirm_password);
         $data = ['status' => 'success'];
         $validate = Utils::validPassword($_POST['password']);
+        // валидация
         if ($validate != 1) {
             Utils::setFlash('register_error', $validate);
             $data['status'] = 'error';
             echo json_encode($data);
             return;
         }
-
+        // проверка на совпадение пароля
         if ($password !== $confirm_password) {
             Utils::setFlash('register_error', 'Пароли не совпадают!');
             $data['status'] = 'error';
@@ -32,7 +40,7 @@ class AuthController
         } else {
             $userExist = Utils::existUser($login, $email);
             $auth = new AuthController();
-
+            // проверка на существование такого пользолвателя
             if ($userExist) {
                 Utils::setFlash('register_error', 'Юзер с таким логином и паролем уже существует!');
                 $data['status'] = 'error';
@@ -52,7 +60,13 @@ class AuthController
             }
         }
     }
-
+    /**
+     * логин
+     *
+     * @params $login, $password
+     *
+     *  @return void
+     */
     public function login($login, $password)
     {
 
@@ -63,8 +77,9 @@ class AuthController
         $stmt = Db::conn()->prepare($sql);
         $stmt->execute(['login' => $login]);
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
-
+        // есть ди такой пользователь
         if ($user) {
+            // проверка пароля
             if (password_verify($password, $user['password'])) {
                 $token = Utils::gen_token();
                 $sql = 'UPDATE user SET token = :token WHERE id = :id';

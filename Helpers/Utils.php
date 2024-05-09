@@ -9,6 +9,13 @@ use Enums\RoleEnum;
 
 class Utils
 {
+    /**
+     * хелпер для обработки введеных данных
+     *
+     * @params string $data
+     *
+     *  @return string
+     */
     public static function sanitize(string $data): string
     {
         $data = trim($data);
@@ -17,14 +24,26 @@ class Utils
         return $data;
     }
 
-    // метод для редиректа
+    /**
+     * хелпер для редеректа
+     *
+     * @params string $page
+     *
+     *  @return void
+     */
     public static function redirect(string $page): void
     {
         $home_url = $_SERVER['HTTP_HOST'];
         header('location: /' . $page);
     }
 
-    // метод для установки сообщения
+    /**
+     * хелпер для установки сообщения
+     *
+     * @params string $name, string $message
+     *
+     *  @return void
+     */
     public static function setFlash(string $name, string $message): void
     {
         if (!empty($_SESSION[$name])) {
@@ -33,7 +52,13 @@ class Utils
         $_SESSION[$name] = $message;
     }
 
-    //метод для вывода сообщения
+    /**
+     * хелпер для вывода сообщения
+     *
+     * @params string $name, string $type
+     *
+     *  @return void
+     */
     public static function displayFlash(string $name, string $type): void
     {
         if (isset($_SESSION[$name])) {
@@ -42,7 +67,11 @@ class Utils
         }
     }
 
-    // метод для проверки авторизации пользователя
+    /**
+     * хелпер для проверки залогинен ли пользователь
+     *
+     *  @return bool
+     */
     public static function isLoggedIn(): bool
     {
         if (isset($_SESSION['user'])) {
@@ -52,6 +81,11 @@ class Utils
         }
     }
 
+    /**
+     * хелпер для создания токена
+     *
+     *  @return bool
+     */
     public static function gen_token(): string
     {
         $token = sprintf(
@@ -68,7 +102,13 @@ class Utils
 
         return $token;
     }
-
+    /**
+     * проверка на существование пользователя
+     *
+     * @params string $login, string $email
+     *
+     *  @return ищщд
+     */
     public static function existUser(string $login, string $email): bool
     {
         $sql = 'select * from user where login=:login or email=:email';
@@ -84,7 +124,13 @@ class Utils
         }
         return true;
     }
-
+    /**
+     * валидация пароля
+     *
+     * @params string $password
+     *
+     *  @return string|bool
+     */
     public static function validPassword(string $password): string|bool
     {
         if (strlen($password) < 8) {
@@ -99,6 +145,11 @@ class Utils
         return !empty($passwordErr) ? $passwordErr : true;
     }
 
+    /**
+     * хелпер для проверки авторизации пользователся с токеном
+     *
+     *  @return bool
+     */
     public static function checkAuth(): bool
     {
         if (!empty($_SESSION['user'])) {
@@ -120,6 +171,13 @@ class Utils
         }
     }
 
+    /**
+     * хелпер для проверки прав
+     *
+     * @param $post
+     *
+     *  @return bool
+     */
     public static function checkRights($post): bool
     {
         if (!empty($_SESSION['user'])) {
@@ -144,6 +202,11 @@ class Utils
         return false;
     }
 
+    /**
+     * хелпер для проверки на админа
+     *
+     *  @return bool
+     */
     public static function isAdmin(): bool
     {
         $sql = 'select * from user where id=:id or token=:token';

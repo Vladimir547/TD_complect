@@ -8,11 +8,31 @@ class Router
 {
     protected $routes = []; // хронение роутов
 
+    /**
+     * один пост
+     *
+     * @param string $method
+     * @param string $url
+     * @param callable $target
+     *
+     *
+     *  @return void
+     */
     public function addRoute(string $method, string $url, callable $target) : void
     {
         $this->routes[$method][$url] = $target;
     }
 
+    /**
+     * проверка на совпадение роутов
+     *
+     * @param string $method
+     * @param string $url
+     * @param callable $target
+     *
+     *
+     *  @return void
+     */
     public function matchRoute() : void
     {
         $method = $_SERVER['REQUEST_METHOD'];
@@ -29,6 +49,6 @@ class Router
                 }
             }
         }
-        echo 11;
+        echo 'Такой страницы нет!!!!';
     }
 }

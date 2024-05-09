@@ -10,7 +10,12 @@ use Enums\StatusEnum;
 
 class PostsController
 {
+    /**
+     * вывод всех опубликованых постов
 
+     *
+     *  @return array
+     */
     public function show()
     {
 
@@ -22,7 +27,11 @@ class PostsController
         $posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
         return $posts;
     }
-
+    /**
+     * вывод всех  постов для админа
+     *
+     *  @return array
+     */
     public function getAll()
     {
 
@@ -32,7 +41,14 @@ class PostsController
         $posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
         return $posts;
     }
-
+    /**
+     * сохранение поста
+     *
+     * @param string $name
+     * @param string $description
+     *
+     *  @return void
+     */
     public function store(string $name, string $description)
     {
         $name = Utils::sanitize($name);
@@ -60,7 +76,13 @@ class PostsController
             echo json_encode($data);
         }
     }
-
+    /**
+     * редактирование поста
+     *
+     * @params string $id,string $name,string $description, string|null $status
+     *
+     *  @return void
+     */
     public function edit(string $id,string $name,string $description, string|null $status)
     {
         $id = Utils::sanitize($id);
@@ -93,7 +115,13 @@ class PostsController
             echo json_encode($data);
         }
     }
-
+    /**
+     * удаление поста
+     *
+     * @param int $id
+     *
+     *  @return void
+     */
     public function delete(int $id)
     {
         $sql = 'DELETE FROM posts WHERE  id= :id';
@@ -105,7 +133,13 @@ class PostsController
         return true;
         ;
     }
-
+    /**
+     * один пост
+     *
+     * @param int $id
+     *
+     *  @return array
+     */
     public function getOne(int $id)
     {
         $sql = 'SELECT p.id,p.name, p.description, p.date, p.status, u.login as author, p.user_id FROM posts as p left join user as u on p.user_id=u.id where p.id= :id';
@@ -117,6 +151,13 @@ class PostsController
         return $post;
     }
 
+    /**
+     * получить посты пользователя
+     *
+     * @param $status = null
+     *
+     *  @return array
+     */
     public function getMy($status = null)
     {
         $where = '';

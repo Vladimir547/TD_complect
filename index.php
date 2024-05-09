@@ -20,12 +20,13 @@ $router = new Router();
 
 
 
-
+// главная
 $router->addRoute('GET', '/', function () {
     $posts = new PostsController();
     $posts = $posts->show();
     include_once("./Views/Pages/main.php");
 });
+// админка
 $router->addRoute('GET', '/admin', function () {
     if(!Utils::checkAuth()) {
         Utils::setFlash('main_error', 'Нет прав');
@@ -40,22 +41,26 @@ $router->addRoute('GET', '/admin', function () {
 
     }
 });
+// посты пользователя
 $router->addRoute('GET', '/my', function () {
     $posts = new PostsController();
     $posts = $posts->getMy();
     include_once("./Views/Pages/my-post.php");
 });
+// фильтры для статуса для пользователя
 $router->addRoute('GET', '/my/:status', function ($status) {
     $posts = new PostsController();
     $posts = $posts->getMy($status);
     include_once("./Views/Pages/my-post.php");
 });
+// страница логин
 $router->addRoute('GET', '/login', function () {
     if (Utils::checkAuth()) {
         header('Location: /');
     }
     include_once("./Views/Pages/Login.php");
 });
+// пост запрос для логирования
 $router->addRoute('POST', '/login', function () {
     if (Utils::checkAuth()) {
         echo json_encode(['status' => 'error', 'message' => 'вы уже авторизованы']);
@@ -64,6 +69,7 @@ $router->addRoute('POST', '/login', function () {
         $auth->login($_POST['login'], $_POST['password']);
     }
 });
+// логаут
 $router->addRoute('GET', '/logout', function () {
     if (Utils::checkAuth()) {
         unset($_SESSION['user']);
@@ -73,12 +79,14 @@ $router->addRoute('GET', '/logout', function () {
         Utils::redirect('login');
     }
 });
+// страница регистрации
 $router->addRoute('GET', '/register', function () {
     if (Utils::checkAuth()) {
         header('Location: /');
     }
     include_once("./Views/Pages/Register.php");
 });
+// пост запрос для регистрации
 $router->addRoute('POST', '/register', function () {
 //    $auth->register(1,1,1);
     if (Utils::checkAuth()) {
@@ -88,6 +96,8 @@ $router->addRoute('POST', '/register', function () {
         $auth->register($_POST['login'], $_POST['email'], $_POST['password'], $_POST['confirm_password']);
     }
 });
+
+// получение одного поста
 $router->addRoute('GET', '/blogs/:blogID', function ($blogID) {
     $post = new PostsController();
     $post = $post->getOne((int)$blogID);
@@ -101,6 +111,7 @@ $router->addRoute('GET', '/blogs/:blogID', function ($blogID) {
     include_once("./Views/Pages/post.php");
 });
 
+// страница создания поста
 $router->addRoute('GET', '/post/create', function () {
     if (!Utils::checkAuth()) {
         $rights = 'Нет доступа!';
@@ -108,7 +119,7 @@ $router->addRoute('GET', '/post/create', function () {
 
     include_once("./Views/Pages/create-post.php");
 });
-
+// пост запрос для создания поста
 $router->addRoute('POST', '/post/create', function () {
     if (!Utils::checkAuth()) {
         echo json_encode(['status' => 'error', 'message' => 'Нет прав']);
@@ -117,6 +128,7 @@ $router->addRoute('POST', '/post/create', function () {
         $post = $post->store($_POST['name'], $_POST['description']);
     }
 });
+// удаление поста
 $router->addRoute('GET', '/post/delete/:id', function ($id) {
     $post = new PostsController();
     $post = $post->getOne((int)$id);
@@ -146,6 +158,7 @@ $router->addRoute('GET', '/post/delete/:id', function ($id) {
         header('Location: /');
     }
 });
+// страница редактирование поста
 $router->addRoute('GET', '/post/edit/:blogID', function ($blogID) {
     $post = new PostsController();
     $post = $post->getOne((int)$blogID);
@@ -158,6 +171,7 @@ $router->addRoute('GET', '/post/edit/:blogID', function ($blogID) {
     }
     include_once("./Views/Pages/post-edit.php");
 });
+// пост запрос редактирование поста
 $router->addRoute('POST', '/post/edit/', function () {
     $post = new PostsController();
     $post = $post->getOne((int)$_POST['id']);
